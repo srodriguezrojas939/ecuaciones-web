@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -22,6 +21,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');
 
+        /* ANIMACIÓN FADE IN */
         .fade-in { opacity: 0; transform: translateY(25px); animation: fadeUp 0.9s ease forwards; }
         @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
@@ -41,9 +41,12 @@
         input, select {
             width: 100%; font-family: 'Open Sans', sans-serif; font-size: 15px; padding: 14px;
             margin-bottom: 22px; border: 1px solid #ccc; border-radius: 30px;
-            background: white; box-sizing: border-box;
+            background: white; box-sizing: border-box; transition: all 0.3s ease;
         }
 
+        input:focus { outline: none; border-color: #999; box-shadow: 0 0 0 3px rgba(0,0,0,0.05); }
+
+        /* SWITCH DECIMAL */
         .opcion-decimal { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding: 0 10px; }
         .switch { position: relative; display: inline-block; width: 50px; height: 24px; }
         .switch input { opacity: 0; width: 0; height: 0; }
@@ -56,16 +59,30 @@
         .boton-estilo {
             display: flex; align-items: center; justify-content: center; gap: 12px;
             background: white; border: 1px solid #ccc; border-radius: 35px;
-            padding: 14px 22px; font-size: 14px; cursor: pointer; transition: all 0.3s ease; color: black; text-decoration: none;
+            padding: 14px 22px; font-family: 'Open Sans', sans-serif; font-size: 14px; 
+            cursor: pointer; transition: all 0.3s ease; color: black; text-decoration: none;
         }
         .boton-estilo:hover { background: #e6e6e6; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .boton-principal { background: black; color: white; border: none; font-weight: 600; }
+        .boton-principal { background: black; color: white; border: none; font-weight: 600; font-size: 15px; }
 
         #resultado { margin-top: 30px; padding: 25px; background: white; border-radius: 25px; min-height: 50px; text-align: center; font-size: 1.2rem; border: 1px solid #eee; overflow-x: auto; }
 
+        /* --- ESTILOS DEL MODAL RECOBRADOS --- */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
-        .modal-content { background: #F2F2F2; margin: 10% auto; padding: 30px; border-radius: 35px; width: 80%; max-width: 500px; position: relative; animation: fadeUp 0.5s ease;}
-        .close { position: absolute; top: 15px; right: 20px; font-size: 25px; cursor: pointer; }
+        .modal-content { 
+            background: #F2F2F2; margin: 5% auto; padding: 35px; border-radius: 35px; 
+            width: 90%; max-width: 550px; max-height: 80vh; overflow-y: auto; 
+            position: relative; animation: fadeUp 0.5s ease; font-family: 'Open Sans', sans-serif;
+        }
+        .modal-content h2 { font-family: 'Playfair Display', serif; font-size: 28px; border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-top: 0; }
+        .modal-content h3 { font-family: 'Playfair Display', serif; font-size: 18px; margin-bottom: 8px; color: #000; margin-top: 20px; }
+        .modal-content p { font-size: 14px; color: #444; line-height: 1.5; }
+        
+        .ejemplo-box {
+            background: white; padding: 10px 15px; border-radius: 15px; 
+            display: block; font-family: monospace; margin: 10px 0; border-left: 3px solid black; font-size: 13px;
+        }
+        .close { position: absolute; top: 20px; right: 25px; font-size: 28px; cursor: pointer; color: #666; }
     </style>
 </head>
 <body>
@@ -88,7 +105,7 @@
         </select>
 
         <div class="opcion-decimal">
-            <span style="font-size: 14px;">Aproximar a decimales</span>
+            <span style="font-size: 14px; color: #333;">Aproximar a decimales</span>
             <label class="switch">
                 <input type="checkbox" id="modoDecimal" onchange="resolverEcuacion()">
                 <span class="slider"></span>
@@ -114,37 +131,42 @@
         
         <section>
             <h3>1. Identidades y Paréntesis</h3>
-            <p>Usa siempre paréntesis para envolver el argumento de funciones trigonométricas, logaritmos o raíces.</p>
+            <p>Usa siempre paréntesis para envolver el argumento de funciones trigonométricas, logaritmos o raíces para asegurar la precisión.</p>
             <span class="ejemplo-box">Correcto: cos(x), tan(2*x), log(x)</span>
         </section>
 
         <section>
             <h3>2. Multiplicación y división</h3>
-            <p>Para evitar errores, usa el asterisco <b>*</b> cuando multipliques términos distintos.Para las divisiones recomiendo utilizar parentesis señalando todo lo que abarca el numerador y el denominador <b>(a+b)/(c+d)</b>  </p>
-            <span class="ejemplo-box">Ejemplo: x*sin(x) y (x+4)/(5+10)</span>
+            <p>Usa el asterisco <b>*</b> para multiplicar. Para divisiones, usa paréntesis para agrupar numeradores y denominadores complejos.</p>
+            <span class="ejemplo-box">Ejemplo: x*sin(x) &nbsp; | &nbsp; (x+4)/(5+10)</span>
         </section>
 
         <section>
             <h3>3. Sobre el Logaritmo Natural (ln)</h3>
-            <p>El sistema interpreta <b>ln</b> como <b>log</b>. El resultado se mostrará usando la nomenclatura estándar del motor matemático:</p>
+            <p>El sistema interpreta <b>ln</b> como <b>log</b>. El resultado se mostrará con la nomenclatura estándar del motor:</p>
             <span class="ejemplo-box">log(x) equivale al logaritmo natural</span>
         </section>
 
         <section>
             <h3>4. Redirección a MathDF</h3>
-            <p>Esta herramienta no tiene ningún vínculo oficial con MathDF. Te redirigimos allí para el "paso a paso" debido a su excelente calidad y porque, por el momento, no dispongo del tiempo necesario para programar un motor de resolución detallada desde cero.</p>
+            <p>No tenemos vínculo oficial con MathDF. Te redirigimos allí para el "paso a paso" por su calidad técnica, ya que actualmente no cuento con el tiempo para programar un motor de pasos desde cero.</p>
         </section>
         
-         <section>
+        <section>
             <h3>5. Aproximación a decimal</h3>
-            <p>La herramienta de programación utilizada no está optimizada para raices por el momento, por ende en caso de que te aparezca una fracción gigante puedes acceder a la aproximación decimal en cualquier momento</p>
+            <p>Si el resultado exacto muestra fracciones muy extensas, puedes activar el interruptor de aproximación decimal en cualquier momento.</p>
         </section>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button onclick="cerrarModal()" class="boton-estilo boton-principal" style="width: auto; padding: 10px 30px;">Entendido</button>
+        </div>
     </div>
 </div>
 
 <script>
 function abrirModal() { document.getElementById('miModal').style.display = "block"; }
 function cerrarModal() { document.getElementById('miModal').style.display = "none"; }
+window.onclick = function(e) { if (e.target == document.getElementById('miModal')) cerrarModal(); }
 
 function resolverEcuacion() {
     const inputStr = document.getElementById('ecuacion').value.trim();
@@ -155,30 +177,21 @@ function resolverEcuacion() {
     if (!inputStr) return;
 
     try {
-        // Configuraciones de Nerdamer para evitar fracciones feas
         nerdamer.set('SOLVE_SOLUTIONS_AS_EXPRESSIONS', 'true');
-        
         let eq = inputStr.replace(/π/g, 'pi').replace(/ln/g, 'log');
-        
-        // Resolvemos la ecuación
         let sol = nerdamer.solve(eq, v);
-        
-        // Extraemos las soluciones del objeto Vector de Nerdamer
         let listaSoluciones = sol.symbol.elements;
         
         if (esDecimal) {
             let dArray = [];
             listaSoluciones.forEach(s => {
-                // Forzamos evaluación numérica pura
                 let num = nerdamer(s).evaluate().text();
-                // Si es un número válido, lo formateamos
                 if(!isNaN(parseFloat(num))) {
                     dArray.push(parseFloat(num).toFixed(4));
                 }
             });
             out.innerHTML = `$$${v} \\approx \\{ ${dArray.join(', ')} \\}$$`;
         } else {
-            // Simplificamos cada solución antes de mostrarla
             let texSolutions = [];
             listaSoluciones.forEach(s => {
                 texSolutions.push(nerdamer(s).toTeX());
