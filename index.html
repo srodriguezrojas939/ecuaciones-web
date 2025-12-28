@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solucionador de Ecuaciones Pro</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/nerdamer.core.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Algebra.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Calculus.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Solve.js"></script>
+    
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$']] }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(25px);
+            animation: fadeUp 0.9s ease forwards;
+        }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        body {
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .calculadora-moderna {
+            max-width: 650px;
+            width: 100%;
+            margin: 10px auto;
+            padding: 40px 30px;
+            background: #F2F2F2;
+            border-radius: 35px;
+            font-family: 'Open Sans', sans-serif;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 28px;
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: titleFadeIn 1s ease forwards;
+            animation-delay: 0.5s;
+        }
+
+        .header-section h1 {
+            font-size: 40px;
+            font-weight: 600;
+            margin: 0;
+            font-family: 'Playfair Display', serif;
+            color: black;
+        }
+
+        .header-section p {
+            font-size: 20px;
+            font-weight: 600;
+            margin-top: 5px;
+            font-family: 'Playfair Display', serif;
+            color: #333;
+        }
+
+        @keyframes titleFadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        label {
+            display: block;
+            font-size: 15px;
+            margin-bottom: 8px;
+            margin-left: 10px;
+            color: #333;
+        }
+
+        input, select {
+            width: 100%;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 15px;
+            padding: 14px;
+            margin-bottom: 22px;
+            border: 1px solid #ccc;
+            border-radius: 30px;
+            background: white;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        input:focus { outline: none; border-color: #999; box-shadow: 0 0 0 3px rgba(0,0,0,0.05); }
+
+        .botones-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .boton-estilo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 35px;
+            padding: 14px 22px;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: black;
+            text-decoration: none;
+        }
+
+        .boton-estilo:hover {
+            background: #e6e6e6;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .boton-estilo img { width: 22px; height: 22px; }
+
+        .boton-principal {
+            background: black;
+            color: white;
+            border: none;
+            font-weight: 600;
+        }
+
+        #resultado {
+            margin-top: 30px;
+            padding: 25px;
+            background: white;
+            border-radius: 25px;
+            min-height: 50px;
+            text-align: center;
+            font-size: 1.3rem;
+            border: 1px solid #eee;
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background-color: #F2F2F2;
+            margin: 5% auto;
+            padding: 35px;
+            border-radius: 35px;
+            width: 90%;
+            max-width: 550px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            animation: fadeUp 0.5s ease;
+        }
+
+        .modal-content h2 { font-family: 'Playfair Display', serif; font-size: 28px; border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-top:0; }
+        .modal-content h3 { font-family: 'Playfair Display', serif; font-size: 18px; color: #000; }
+        .modal-content p, .modal-content li { font-family: 'Open Sans', sans-serif; font-size: 14px; color: #444; }
+
+        .ejemplo-box {
+            background: white;
+            padding: 8px 15px;
+            border-radius: 15px;
+            display: block;
+            font-family: monospace;
+            margin: 5px 0 15px 0;
+            border-left: 3px solid black;
+        }
+
+        .close-modal { position: absolute; top: 20px; right: 25px; font-size: 28px; cursor: pointer; color: #666; }
+    </style>
+</head>
+<body>
+
+<div class="fade-in">
+    <div class="calculadora-moderna">
+        
+        <div class="header-section">
+            <h1>Solucionador de ecuaciones</h1>
+            <p>√(Raiz) Cuadrada²</p>
+        </div>
+
+        <label>Escribe tu ecuación</label>
+        <input id="ecuacion" placeholder="Ej: x^2 - 4 = 0" type="text">
+
+        <label>Variable a despejar</label>
+        <select id="variable">
+            <option value="x">x</option>
+            <option value="y">y</option>
+            <option value="z">z</option>
+            <option value="t">t</option>
+        </select>
+
+        <div class="botones-container">
+            <button onclick="resolverEcuacion()" class="boton-estilo boton-principal">
+                Resolver Ecuación
+            </button>
+
+            <button onclick="irAPasoAPasoEq()" class="boton-estilo">
+                <img src="https://cdn-icons-png.flaticon.com/512/2374/2374367.png" alt="pasos">
+                Ver paso a paso (MathDF)
+            </button>
+
+            <button onclick="abrirModal()" class="boton-estilo">
+                <img src="https://cdn-icons-png.flaticon.com/512/471/471664.png" alt="info">
+                ¿Cómo funciona?
+            </button>
+        </div>
+
+        <div id="resultado">Esperando ecuación...</div>
+    </div>
+</div>
+
+<div id="modalInstrucciones" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="cerrarModal()">&times;</span>
+        <h2>Guía de Uso (Ecuaciones)</h2>
+        
+        <section>
+            <h3>1. El signo Igual (=)</h3>
+            <p>Asegúrate de incluir el signo igual. Si solo escribes una expresión, la calculadora intentará igualarla a cero automáticamente.</p>
+            <span class="ejemplo-box">Ejemplo: x^2 = 16</span>
+        </section>
+
+        <section>
+            <h3>2. Multiplicación y Potencias</h3>
+            <p>Usa <b>*</b> para multiplicar y <b>^</b> para elevar a una potencia.</p>
+            <span class="ejemplo-box">Ejemplo: 2*x + 5 = 15</span>
+        </section>
+
+        <section>
+            <h3>3. Varias soluciones</h3>
+            <p>Si la ecuación es cuadrática o superior, el sistema te devolverá todas las soluciones posibles separadas por comas.</p>
+        </section>
+
+        <section>
+            <h3>4. Redirección a MathDF</h3>
+            <p>Para ver el despeje detallado o el método (factorización, fórmula general, etc.), el botón "Paso a paso" te enviará a <b>MathDF</b>. No tengo vínculo con ellos, pero recomiendo su motor por su gran precisión.</p>
+        </section>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <button onclick="cerrarModal()" class="boton-estilo boton-principal" style="width: auto; padding: 10px 30px;">Entendido</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function abrirModal() { document.getElementById('modalInstrucciones').style.display = "block"; }
+function cerrarModal() { document.getElementById('modalInstrucciones').style.display = "none"; }
+window.onclick = function(e) { if (e.target == document.getElementById('modalInstrucciones')) cerrarModal(); }
+
+function normalizar(expr) {
+    if (!expr) return "";
+    let e = expr.toLowerCase().replace(/\s+/g, '');
+    e = e.replace(/π/g, 'pi');
+    e = e.replace(/ln/g, 'log');
+    return e;
+}
+
+function resolverEcuacion() {
+    const eqInput = document.getElementById('ecuacion').value.trim();
+    const v = document.getElementById('variable').value;
+    const out = document.getElementById('resultado');
+
+    if (!eqInput) { out.innerHTML = "Ingresa una ecuación"; return; }
+
+    try {
+        const eq = normalizar(eqInput);
+        
+        // Nerdamer solve devuelve un arreglo de soluciones
+        let soluciones = nerdamer.solve(eq, v);
+        
+        // Convertimos las soluciones a LaTeX
+        let solTeX = soluciones.toString(); 
+        // Si hay varias soluciones, nerdamer las devuelve como [sol1, sol2]
+        // Formateamos para MathJax
+        let latexResultado = `${v} = ${nerdamer(soluciones).toTeX()}`;
+
+        out.innerHTML = `$$${latexResultado}$$`;
+        MathJax.typesetPromise([out]);
+
+    } catch (error) {
+        out.innerHTML = "<span style='color:red'>No se pudo resolver. Revisa la ecuación.</span>";
+    }
+}
+
+function irAPasoAPasoEq() {
+    const f = document.getElementById('ecuacion').value.trim();
+    const v = document.getElementById('variable').value;
+    if (!f) { alert("Escribe una ecuación primero."); return; }
+    
+    // URL específica para resolución de ecuaciones en MathDF
+    window.open(`https://mathdf.com/eqn/es/?expr=${encodeURIComponent(f)}&v=${v}`, '_blank');
+}
+</script>
+
+</body>
+</html>
