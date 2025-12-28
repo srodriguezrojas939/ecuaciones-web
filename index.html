@@ -105,11 +105,50 @@
 
         input:focus { outline: none; border-color: #999; box-shadow: 0 0 0 3px rgba(0,0,0,0.05); }
 
+        /* Estilo para el modo decimal */
+        .opcion-decimal {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 0 10px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input { opacity: 0; width: 0; height: 0; }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px; width: 18px;
+            left: 3px; bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider { background-color: black; }
+        input:checked + .slider:before { transform: translateX(26px); }
+
         .botones-container {
             display: flex;
             flex-direction: column;
             gap: 12px;
-            margin-top: 10px;
         }
 
         .boton-estilo {
@@ -153,6 +192,7 @@
             text-align: center;
             font-size: 1.3rem;
             border: 1px solid #eee;
+            overflow-x: auto;
         }
 
         /* MODAL */
@@ -206,15 +246,22 @@
         </div>
 
         <label>Escribe tu ecuación</label>
-        <input id="ecuacion" placeholder="Ej: x^2 - 4 = 0" type="text">
+        <input id="ecuacion" placeholder="Ej: x^2 - 8 = 0" type="text">
 
         <label>Variable a despejar</label>
         <select id="variable">
             <option value="x">x</option>
             <option value="y">y</option>
             <option value="z">z</option>
-            <option value="t">t</option>
         </select>
+
+        <div class="opcion-decimal">
+            <span style="font-size: 14px; color: #333;">Aproximar a decimales</span>
+            <label class="switch">
+                <input type="checkbox" id="modoDecimal" onchange="resolverEcuacion()">
+                <span class="slider"></span>
+            </label>
+        </div>
 
         <div class="botones-container">
             <button onclick="resolverEcuacion()" class="boton-estilo boton-principal">
@@ -242,25 +289,19 @@
         <h2>Guía de Uso (Ecuaciones)</h2>
         
         <section>
-            <h3>1. El signo Igual (=)</h3>
-            <p>Asegúrate de incluir el signo igual. Si solo escribes una expresión, la calculadora intentará igualarla a cero automáticamente.</p>
-            <span class="ejemplo-box">Ejemplo: x^2 = 16</span>
+            <h3>1. Modo Exacto vs Decimal</h3>
+            <p>Por defecto, la calculadora intentará darte soluciones con raíces (ej: $\sqrt{2}$) para mayor precisión. Si prefieres decimales, activa el interruptor <b>Aproximar a decimales</b>.</p>
         </section>
 
         <section>
-            <h3>2. Multiplicación y Potencias</h3>
-            <p>Usa <b>*</b> para multiplicar y <b>^</b> para elevar a una potencia.</p>
-            <span class="ejemplo-box">Ejemplo: 2*x + 5 = 15</span>
+            <h3>2. El signo Igual (=)</h3>
+            <p>Asegúrate de incluir el signo igual. Si no lo pones, se asume que la expresión es igual a cero.</p>
+            <span class="ejemplo-box">Ejemplo: x^2 = 8</span>
         </section>
 
         <section>
-            <h3>3. Varias soluciones</h3>
-            <p>Si la ecuación es cuadrática o superior, el sistema te devolverá todas las soluciones posibles separadas por comas.</p>
-        </section>
-
-        <section>
-            <h3>4. Redirección a MathDF</h3>
-            <p>Para ver el despeje detallado o el método (factorización, fórmula general, etc.), el botón "Paso a paso" te enviará a <b>MathDF</b>. No tengo vínculo con ellos, pero recomiendo su motor por su gran precisión.</p>
+            <h3>3. Redirección a MathDF</h3>
+            <p>Para ver el despeje paso a paso, el botón te enviará a <b>MathDF</b>. No tengo vínculo con ellos, pero recomiendo su motor por su calidad.</p>
         </section>
 
         <div style="text-align: center; margin-top: 20px;">
@@ -278,13 +319,13 @@ function normalizar(expr) {
     if (!expr) return "";
     let e = expr.toLowerCase().replace(/\s+/g, '');
     e = e.replace(/π/g, 'pi');
-    e = e.replace(/ln/g, 'log');
     return e;
 }
 
 function resolverEcuacion() {
     const eqInput = document.getElementById('ecuacion').value.trim();
     const v = document.getElementById('variable').value;
+    const esDecimal = document.getElementById('modoDecimal').checked;
     const out = document.getElementById('resultado');
 
     if (!eqInput) { out.innerHTML = "Ingresa una ecuación"; return; }
@@ -292,20 +333,30 @@ function resolverEcuacion() {
     try {
         const eq = normalizar(eqInput);
         
-        // Nerdamer solve devuelve un arreglo de soluciones
+        // Configuramos nerdamer para que use raíces exactas
+        nerdamer.set('SOLVE_SOLUTIONS_AS_EXPRESSIONS', true);
         let soluciones = nerdamer.solve(eq, v);
         
-        // Convertimos las soluciones a LaTeX
-        let solTeX = soluciones.toString(); 
-        // Si hay varias soluciones, nerdamer las devuelve como [sol1, sol2]
-        // Formateamos para MathJax
-        let latexResultado = `${v} = ${nerdamer(soluciones).toTeX()}`;
+        let finalOutput = "";
 
-        out.innerHTML = `$$${latexResultado}$$`;
+        if (esDecimal) {
+            // Evaluamos cada solución para obtener decimales
+            let decimales = soluciones.map(s => {
+                let valor = s.evaluate();
+                // Redondeamos a 4 decimales
+                return Number(valor).toFixed(4);
+            });
+            finalOutput = `${v} \\approx \\{${decimales.join(', ')}\\}`;
+        } else {
+            // Mostramos en formato LaTeX exacto
+            finalOutput = `${v} = ${soluciones.toTeX()}`;
+        }
+
+        out.innerHTML = `$$${finalOutput}$$`;
         MathJax.typesetPromise([out]);
 
     } catch (error) {
-        out.innerHTML = "<span style='color:red'>No se pudo resolver. Revisa la ecuación.</span>";
+        out.innerHTML = "<span style='color:red'>No se pudo resolver. Revisa la sintaxis.</span>";
     }
 }
 
@@ -314,8 +365,8 @@ function irAPasoAPasoEq() {
     const v = document.getElementById('variable').value;
     if (!f) { alert("Escribe una ecuación primero."); return; }
     
-    // URL específica para resolución de ecuaciones en MathDF
-    window.open(`https://mathdf.com/eqn/es/?expr=${encodeURIComponent(f)}&v=${v}`, '_blank');
+    // URL Corregida: equ/es/
+    window.open(`https://mathdf.com/equ/es/?expr=${encodeURIComponent(f)}&v=${v}`, '_blank');
 }
 </script>
 
