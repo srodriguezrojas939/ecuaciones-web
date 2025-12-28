@@ -21,234 +21,67 @@
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');
 
-        .fade-in {
-            opacity: 0;
-            transform: translateY(25px);
-            animation: fadeUp 0.9s ease forwards;
-        }
+        .fade-in { opacity: 0; transform: translateY(25px); animation: fadeUp 0.9s ease forwards; }
+        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
-        @keyframes fadeUp {
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        body {
-            background: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-        }
+        body { background: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
 
         .calculadora-moderna {
-            max-width: 650px;
-            width: 100%;
-            margin: 10px auto;
-            padding: 40px 30px;
-            background: #F2F2F2;
-            border-radius: 35px;
-            font-family: 'Open Sans', sans-serif;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            max-width: 650px; width: 100%; margin: 10px auto; padding: 40px 30px;
+            background: #F2F2F2; border-radius: 35px; font-family: 'Open Sans', sans-serif;
+            position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
         }
 
-        .header-section {
-            text-align: center;
-            margin-bottom: 28px;
-            opacity: 0;
-            transform: translateY(-20px);
-            animation: titleFadeIn 1s ease forwards;
-            animation-delay: 0.5s;
-        }
+        .header-section { text-align: center; margin-bottom: 28px; }
+        .header-section h1 { font-size: 40px; font-weight: 600; margin: 0; font-family: 'Playfair Display', serif; color: black; }
+        .header-section p { font-size: 20px; font-weight: 600; margin-top: 5px; font-family: 'Playfair Display', serif; color: #333; }
 
-        .header-section h1 {
-            font-size: 40px;
-            font-weight: 600;
-            margin: 0;
-            font-family: 'Playfair Display', serif;
-            color: black;
-        }
-
-        .header-section p {
-            font-size: 20px;
-            font-weight: 600;
-            margin-top: 5px;
-            font-family: 'Playfair Display', serif;
-            color: #333;
-        }
-
-        @keyframes titleFadeIn {
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        label {
-            display: block;
-            font-size: 15px;
-            margin-bottom: 8px;
-            margin-left: 10px;
-            color: #333;
-        }
-
+        label { display: block; font-size: 15px; margin-bottom: 8px; margin-left: 10px; color: #333; }
         input, select {
-            width: 100%;
-            font-family: 'Open Sans', sans-serif;
-            font-size: 15px;
-            padding: 14px;
-            margin-bottom: 22px;
-            border: 1px solid #ccc;
-            border-radius: 30px;
-            background: white;
-            transition: all 0.3s ease;
-            box-sizing: border-box;
+            width: 100%; font-family: 'Open Sans', sans-serif; font-size: 15px; padding: 14px;
+            margin-bottom: 22px; border: 1px solid #ccc; border-radius: 30px;
+            background: white; box-sizing: border-box;
         }
 
-        input:focus { outline: none; border-color: #999; box-shadow: 0 0 0 3px rgba(0,0,0,0.05); }
-
-        /* Estilo para el modo decimal */
-        .opcion-decimal {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            padding: 0 10px;
-        }
-
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 24px;
-        }
-
+        /* Switch Decimal */
+        .opcion-decimal { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding: 0 10px; }
+        .switch { position: relative; display: inline-block; width: 50px; height: 24px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 34px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 18px; width: 18px;
-            left: 3px; bottom: 3px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: black; }
         input:checked + .slider:before { transform: translateX(26px); }
 
-        .botones-container {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
+        .botones-container { display: flex; flex-direction: column; gap: 12px; }
         .boton-estilo {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            background: white;
-            border: 1px solid #ccc;
-            border-radius: 35px;
-            padding: 14px 22px;
-            font-family: 'Open Sans', sans-serif;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: black;
-            text-decoration: none;
+            display: flex; align-items: center; justify-content: center; gap: 12px;
+            background: white; border: 1px solid #ccc; border-radius: 35px;
+            padding: 14px 22px; font-size: 14px; cursor: pointer; transition: all 0.3s ease; color: black; text-decoration: none;
         }
+        .boton-estilo:hover { background: #e6e6e6; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .boton-principal { background: black; color: white; border: none; font-weight: 600; }
 
-        .boton-estilo:hover {
-            background: #e6e6e6;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
+        #resultado { margin-top: 30px; padding: 25px; background: white; border-radius: 25px; min-height: 50px; text-align: center; font-size: 1.2rem; border: 1px solid #eee; overflow-x: auto; }
 
-        .boton-estilo img { width: 22px; height: 22px; }
-
-        .boton-principal {
-            background: black;
-            color: white;
-            border: none;
-            font-weight: 600;
-        }
-
-        #resultado {
-            margin-top: 30px;
-            padding: 25px;
-            background: white;
-            border-radius: 25px;
-            min-height: 50px;
-            text-align: center;
-            font-size: 1.3rem;
-            border: 1px solid #eee;
-            overflow-x: auto;
-        }
-
-        /* MODAL */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0; top: 0; width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            backdrop-filter: blur(4px);
-        }
-
-        .modal-content {
-            background-color: #F2F2F2;
-            margin: 5% auto;
-            padding: 35px;
-            border-radius: 35px;
-            width: 90%;
-            max-width: 550px;
-            max-height: 80vh;
-            overflow-y: auto;
-            position: relative;
-            animation: fadeUp 0.5s ease;
-        }
-
-        .modal-content h2 { font-family: 'Playfair Display', serif; font-size: 28px; border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-top:0; }
-        .modal-content h3 { font-family: 'Playfair Display', serif; font-size: 18px; color: #000; }
-        .modal-content p, .modal-content li { font-family: 'Open Sans', sans-serif; font-size: 14px; color: #444; }
-
-        .ejemplo-box {
-            background: white;
-            padding: 8px 15px;
-            border-radius: 15px;
-            display: block;
-            font-family: monospace;
-            margin: 5px 0 15px 0;
-            border-left: 3px solid black;
-        }
-
-        .close-modal { position: absolute; top: 20px; right: 25px; font-size: 28px; cursor: pointer; color: #666; }
+        /* Modal simple */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
+        .modal-content { background: #F2F2F2; margin: 10% auto; padding: 30px; border-radius: 30px; width: 80%; max-width: 500px; position: relative; }
+        .close { position: absolute; top: 15px; right: 20px; font-size: 25px; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="fade-in">
     <div class="calculadora-moderna">
-        
         <div class="header-section">
             <h1>Solucionador de ecuaciones</h1>
             <p>√(Raiz) Cuadrada²</p>
         </div>
 
-        <label>Escribe tu ecuación</label>
-        <input id="ecuacion" placeholder="Ej: x^2 - 8 = 0" type="text">
+        <label>Tu ecuación</label>
+        <input id="ecuacion" placeholder="Ej: x^2 = 8" type="text">
 
-        <label>Variable a despejar</label>
+        <label>Variable</label>
         <select id="variable">
             <option value="x">x</option>
             <option value="y">y</option>
@@ -256,7 +89,7 @@
         </select>
 
         <div class="opcion-decimal">
-            <span style="font-size: 14px; color: #333;">Aproximar a decimales</span>
+            <span style="font-size: 14px;">Aproximar a decimales</span>
             <label class="switch">
                 <input type="checkbox" id="modoDecimal" onchange="resolverEcuacion()">
                 <span class="slider"></span>
@@ -264,108 +97,71 @@
         </div>
 
         <div class="botones-container">
-            <button onclick="resolverEcuacion()" class="boton-estilo boton-principal">
-                Resolver Ecuación
-            </button>
-
+            <button onclick="resolverEcuacion()" class="boton-estilo boton-principal">Resolver</button>
             <button onclick="irAPasoAPasoEq()" class="boton-estilo">
-                <img src="https://cdn-icons-png.flaticon.com/512/2374/2374367.png" alt="pasos">
-                Ver paso a paso (MathDF)
+                <img src="https://cdn-icons-png.flaticon.com/512/2374/2374367.png" width="20"> Paso a paso (MathDF)
             </button>
-
-            <button onclick="abrirModal()" class="boton-estilo">
-                <img src="https://cdn-icons-png.flaticon.com/512/471/471664.png" alt="info">
-                ¿Cómo funciona?
-            </button>
+            <button onclick="abrirModal()" class="boton-estilo">¿Cómo funciona?</button>
         </div>
 
         <div id="resultado">Esperando ecuación...</div>
     </div>
 </div>
 
-<div id="modalInstrucciones" class="modal">
+<div id="miModal" class="modal">
     <div class="modal-content">
-        <span class="close-modal" onclick="cerrarModal()">&times;</span>
-        <h2>Guía de Uso (Ecuaciones)</h2>
-        
-        <section>
-            <h3>1. Modo Exacto vs Decimal</h3>
-            <p>Por defecto, la calculadora intentará darte soluciones con raíces (ej: $\sqrt{2}$) para mayor precisión. Si prefieres decimales, activa el interruptor <b>Aproximar a decimales</b>.</p>
-        </section>
-
-        <section>
-            <h3>2. El signo Igual (=)</h3>
-            <p>Asegúrate de incluir el signo igual. Si no lo pones, se asume que la expresión es igual a cero.</p>
-            <span class="ejemplo-box">Ejemplo: x^2 = 8</span>
-        </section>
-
-        <section>
-            <h3>3. Redirección a MathDF</h3>
-            <p>Para ver el despeje paso a paso, el botón te enviará a <b>MathDF</b>. No tengo vínculo con ellos, pero recomiendo su motor por su calidad.</p>
-        </section>
-
-        <div style="text-align: center; margin-top: 20px;">
-            <button onclick="cerrarModal()" class="boton-estilo boton-principal" style="width: auto; padding: 10px 30px;">Entendido</button>
-        </div>
+        <span class="close" onclick="cerrarModal()">&times;</span>
+        <h2 style="font-family: 'Playfair Display';">Ayuda</h2>
+        <p>Usa <b>^</b> para potencias y <b>*</b> para multiplicar.</p>
+        <p><b>ln(x)</b> es interpretado como <b>log(x)</b>.</p>
+        <p>Si activas decimales, verás una aproximación redondeada.</p>
     </div>
 </div>
 
 <script>
-function abrirModal() { document.getElementById('modalInstrucciones').style.display = "block"; }
-function cerrarModal() { document.getElementById('modalInstrucciones').style.display = "none"; }
-window.onclick = function(e) { if (e.target == document.getElementById('modalInstrucciones')) cerrarModal(); }
-
-function normalizar(expr) {
-    if (!expr) return "";
-    let e = expr.toLowerCase().replace(/\s+/g, '');
-    e = e.replace(/π/g, 'pi');
-    return e;
-}
+function abrirModal() { document.getElementById('miModal').style.display = "block"; }
+function cerrarModal() { document.getElementById('miModal').style.display = "none"; }
 
 function resolverEcuacion() {
-    const eqInput = document.getElementById('ecuacion').value.trim();
+    const input = document.getElementById('ecuacion').value.trim();
     const v = document.getElementById('variable').value;
     const esDecimal = document.getElementById('modoDecimal').checked;
     const out = document.getElementById('resultado');
 
-    if (!eqInput) { out.innerHTML = "Ingresa una ecuación"; return; }
+    if (!input) return;
 
     try {
-        const eq = normalizar(eqInput);
+        // Limpiamos la entrada: nerdamer prefiere que si hay un "=" se trate como tal
+        let eq = input.replace(/π/g, 'pi').replace(/ln/g, 'log');
         
-        // Configuramos nerdamer para que use raíces exactas
-        nerdamer.set('SOLVE_SOLUTIONS_AS_EXPRESSIONS', true);
+        // Resolvemos
         let soluciones = nerdamer.solve(eq, v);
         
-        let finalOutput = "";
-
+        // El resultado de solve es un "Vector" de Nerdamer
         if (esDecimal) {
-            // Evaluamos cada solución para obtener decimales
-            let decimales = soluciones.map(s => {
-                let valor = s.evaluate();
-                // Redondeamos a 4 decimales
-                return Number(valor).toFixed(4);
-            });
-            finalOutput = `${v} \\approx \\{${decimales.join(', ')}\\}`;
+            // Convertimos cada elemento del vector a decimal
+            let dArray = [];
+            for(let i=0; i<soluciones.symbol.elements.length; i++) {
+                let s = soluciones.symbol.elements[i];
+                let val = nerdamer(s).evaluate().text('decimals');
+                dArray.push(parseFloat(val).toFixed(4));
+            }
+            out.innerHTML = `$$${v} \\approx \\{${dArray.join(', ')}\\}$$`;
         } else {
-            // Mostramos en formato LaTeX exacto
-            finalOutput = `${v} = ${soluciones.toTeX()}`;
+            // Modo exacto (raíces y fracciones)
+            out.innerHTML = `$$${v} = ${soluciones.toTeX()}$$`;
         }
-
-        out.innerHTML = `$$${finalOutput}$$`;
+        
         MathJax.typesetPromise([out]);
-
-    } catch (error) {
-        out.innerHTML = "<span style='color:red'>No se pudo resolver. Revisa la sintaxis.</span>";
+    } catch (e) {
+        out.innerHTML = "<span style='color:red'>Error: Revisa la ecuación</span>";
     }
 }
 
 function irAPasoAPasoEq() {
     const f = document.getElementById('ecuacion').value.trim();
     const v = document.getElementById('variable').value;
-    if (!f) { alert("Escribe una ecuación primero."); return; }
-    
-    // URL Corregida: equ/es/
+    if (!f) return;
     window.open(`https://mathdf.com/equ/es/?expr=${encodeURIComponent(f)}&v=${v}`, '_blank');
 }
 </script>
