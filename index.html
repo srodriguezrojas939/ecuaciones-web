@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ecuaciones Pro - Visual</title>
+    <title>Ecuaciones Pro - Solo Reales</title>
 
     <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/nerdamer.core.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/nerdamer@1.1.13/Algebra.js"></script>
@@ -19,7 +19,7 @@
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap');
 
         body { background: white; font-family: 'Open Sans', sans-serif; margin: 0; padding: 15px; display: flex; justify-content: center; }
 
@@ -35,7 +35,6 @@
         .header-section h1 { font-family: 'Playfair Display', serif; font-size: 34px; margin: 0; font-weight: 600; }
         .header-section p { font-family: 'Playfair Display', serif; font-size: 18px; margin: 5px 0; }
 
-        /* Panel Visual en Tiempo Real */
         #preview-container {
             background: white; margin-bottom: 25px; padding: 20px;
             border-radius: 25px; min-height: 50px; display: flex;
@@ -43,33 +42,32 @@
             overflow-x: auto;
         }
 
-        label { display: block; font-size: 14px; color: #555; margin: 0 0 8px 12px; }
+        label { display: block; font-size: 14px; color: #555; margin: 0 0 8px 12px; font-weight: 400; }
         
         input, select {
             width: 100%; padding: 15px 20px; margin-bottom: 20px; border-radius: 30px;
             border: 1px solid #ccc; box-sizing: border-box; font-size: 16px; outline: none;
-            font-family: 'Open Sans', sans-serif;
+            font-family: 'Open Sans', sans-serif; font-weight: 400;
         }
 
-        .opciones-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-
-        .switch-box {
+        .opcion-decimal-container {
+            background: #e9e9e9; padding: 12px 22px; border-radius: 30px;
             display: flex; align-items: center; justify-content: space-between;
-            background: #e9e9e9; padding: 10px 18px; border-radius: 30px;
+            margin-bottom: 20px;
         }
 
-        .switch-label { font-size: 12px; color: #333; }
+        .switch-label { font-size: 14px; color: #333; font-weight: 400; }
 
-        .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
+        .switch { position: relative; display: inline-block; width: 44px; height: 22px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #ccc; transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background: white; transition: .4s; border-radius: 50%; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background: black; }
-        input:checked + .slider:before { transform: translateX(20px); }
+        input:checked + .slider:before { transform: translateX(22px); }
 
         .btn-principal {
             width: 100%; background: black; color: white; border: none;
-            padding: 18px; border-radius: 35px; font-size: 16px; font-weight: 700;
+            padding: 18px; border-radius: 35px; font-size: 17px; font-weight: 700;
             cursor: pointer; transition: 0.3s; font-family: 'Open Sans', sans-serif;
             margin-bottom: 15px;
         }
@@ -79,16 +77,16 @@
             width: 100%; background: white; color: #333; border: 1px solid #ccc;
             padding: 12px; border-radius: 30px; font-size: 14px; cursor: pointer;
             transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px;
+            font-family: 'Open Sans', sans-serif; font-weight: 400;
         }
 
         #resultado {
             margin-top: 25px; padding: 25px; background: white; border-radius: 25px;
             text-align: center; border: 1px solid #eee; overflow-x: auto;
-            min-height: 50px; font-size: 1.2rem;
+            min-height: 50px; font-size: 1.25rem;
         }
 
         @media (max-width: 500px) {
-            .opciones-grid { grid-template-columns: 1fr; }
             .header-section h1 { font-size: 28px; }
         }
     </style>
@@ -107,33 +105,24 @@
         </div>
 
         <label>Ecuación</label>
-        <input type="text" id="ecuacion" placeholder="Ej: x^2 - 4 = 0" oninput="actualizarPreview()">
+        <input type="text" id="ecuacion" placeholder="Ej: x^2 - 16 = 0" oninput="actualizarPreview()">
 
-        <label>Variable</label>
+        <label>Variable a despejar</label>
         <select id="variable" onchange="actualizarPreview()">
-            <option value="x">Despejar x</option>
-            <option value="y">Despejar y</option>
-            <option value="z">Despejar z</option>
+            <option value="x">x</option>
+            <option value="y">y</option>
+            <option value="z">z</option>
         </select>
 
-        <div class="opciones-grid">
-            <div class="switch-box">
-                <span class="switch-label">Decimales</span>
-                <label class="switch">
-                    <input type="checkbox" id="modoDecimal" onchange="resolverEcuacion()">
-                    <span class="slider"></span>
-                </label>
-            </div>
-            <div class="switch-box">
-                <span class="switch-label">Imaginarios</span>
-                <label class="switch">
-                    <input type="checkbox" id="modoImaginario" onchange="resolverEcuacion()">
-                    <span class="slider"></span>
-                </label>
-            </div>
+        <div class="opcion-decimal-container">
+            <span class="switch-label">Aproximar a decimales</span>
+            <label class="switch">
+                <input type="checkbox" id="modoDecimal" onchange="resolverEcuacion()">
+                <span class="slider"></span>
+            </label>
         </div>
 
-        <button class="btn-principal" onclick="resolverEcuacion()">CALCULAR SOLUCIÓN</button>
+        <button class="btn-principal" onclick="resolverEcuacion()">Resolver ecuación</button>
         
         <button class="btn-secundario" onclick="irAPasoAPaso()">
             <img src="https://cdn-icons-png.flaticon.com/512/2374/2374367.png" width="18">
@@ -154,7 +143,6 @@
             preview.innerHTML = "$$ \\text{Escribe una ecuación...} $$";
         } else {
             try {
-                // Limpieza visual para el preview
                 let visual = eq.replace(/=/g, ' = ');
                 preview.innerHTML = `$$ ${visual} \\implies ${v} = ? $$`;
             } catch (e) {}
@@ -166,57 +154,52 @@
         const input = document.getElementById('ecuacion').value.trim();
         const v = document.getElementById('variable').value;
         const esDecimal = document.getElementById('modoDecimal').checked;
-        const mostrarImaginarios = document.getElementById('modoImaginario').checked;
         const out = document.getElementById('resultado');
 
         if (!input) return;
 
         try {
-            // Normalización para Nerdamer
+            // Normalización
             let normalizedEq = input.replace(/ln/g, 'log').replace(/π/g, 'pi');
             
-            // Forzar Nerdamer a devolver soluciones exactas (simplificadas con raíces)
             nerdamer.set('SOLVE_SOLUTIONS_AS_EXPRESSIONS', 'true');
             let sol = nerdamer.solve(normalizedEq, v);
             let listaOriginal = sol.symbol.elements;
 
-            let solucionesFinales = [];
+            let solucionesReales = [];
 
+            // Filtrar solo resultados reales
             listaOriginal.forEach(s => {
-                let sStr = s.toString();
-                let esImaginario = sStr.includes('i');
-
-                // Filtro de imaginarios
-                if (!mostrarImaginarios && esImaginario) return;
-
-                if (esDecimal) {
-                    try {
-                        let evalVal = nerdamer(s).evaluate().text();
-                        // Manejo de decimales complejos si se permiten
-                        if (esImaginario) {
-                            solucionesFinales.push(s.toTeX()); // Mantener exacto si es complejo
-                        } else {
-                            let num = parseFloat(evalVal);
-                            solucionesFinales.push(!isNaN(num) ? num.toFixed(4) : s.toTeX());
-                        }
-                    } catch(e) { solucionesFinales.push(s.toTeX()); }
-                } else {
-                    // Simplificación de raíces por defecto en Nerdamer
-                    solucionesFinales.push(nerdamer(s).toTeX());
+                if (!s.toString().includes('i')) {
+                    solucionesReales.push(s);
                 }
             });
 
-            if (solucionesFinales.length === 0) {
-                out.innerHTML = "<span style='color:#777'>No hay soluciones reales (Activa imaginarios).</span>";
+            if (solucionesReales.length === 0) {
+                out.innerHTML = "<span style='color:#777; font-size: 16px;'>No pertenece a los reales.</span>";
                 return;
             }
 
-            // Formateo x1, x2, x3...
+            let resultadosFinales = [];
+
+            solucionesReales.forEach((s, index) => {
+                if (esDecimal) {
+                    try {
+                        let evalVal = nerdamer(s).evaluate().text();
+                        let num = parseFloat(evalVal);
+                        resultadosFinales.push(!isNaN(num) ? num.toFixed(4) : nerdamer(s).toTeX());
+                    } catch(e) { resultadosFinales.push(nerdamer(s).toTeX()); }
+                } else {
+                    resultadosFinales.push(nerdamer(s).toTeX());
+                }
+            });
+
+            // Formateo de salida x1, x2...
             let outputTex = "";
-            if (solucionesFinales.length === 1) {
-                outputTex = `${v} = ${solucionesFinales[0]}`;
+            if (resultadosFinales.length === 1) {
+                outputTex = `${v} = ${resultadosFinales[0]}`;
             } else {
-                let lineas = solucionesFinales.map((val, index) => `${v}_{${index + 1}} = ${val}`);
+                let lineas = resultadosFinales.map((val, idx) => `${v}_{${idx + 1}} = ${val}`);
                 outputTex = lineas.join(' ; \\quad ');
             }
 
@@ -224,7 +207,7 @@
             MathJax.typesetPromise([out]);
 
         } catch (e) {
-            out.innerHTML = "<span style='color:red; font-size:14px;'>Error de sintaxis. Verifica los paréntesis.</span>";
+            out.innerHTML = "<span style='color:red; font-size:14px;'>Error de sintaxis o sistema no soportado.</span>";
         }
     }
 
